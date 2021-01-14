@@ -1,10 +1,10 @@
 <template>
-    <v-card height="100%" class="d-flex flex-column justify-space-between">
+    <v-card height="100%" class="resource d-flex flex-column justify-space-between">
         <div class="d-flex flex-no-wrap align-center">
             <img v-if="img.src" class="ma-3 res-img" :src="display(img.src)" :alt="img.alt"/>
             <div class="text-left">
                 <v-card-title class="headline" v-text="doc.name"/>
-                <v-card-subtitle  v-html="doc.content"/>
+                <v-card-subtitle class="content"  v-html="doc.content"/>
             </div>
         </div>
         <v-card-actions>

@@ -11,7 +11,7 @@
                         {{banner.icon}}
                     </v-icon>
                 </v-avatar>
-                <div v-html="banner.content" />
+                <div class="content" v-html="banner.content" />
                 <template v-slot:actions="{dismiss}">
                     <v-btn color="primary" @click="dismiss" text>
                         dismiss
