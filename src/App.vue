@@ -105,4 +105,15 @@ export default {
     margin-right: 10px;
     max-height: 100px;
   }
+
+
+  .content .video {
+    width: 640px;
+    height: 480px;
+  }
+
+  .resource .content .video {
+    width: 320px;
+    height: 240px;
+  }
 </style>
