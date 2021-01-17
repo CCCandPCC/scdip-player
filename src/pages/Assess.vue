@@ -134,13 +134,20 @@ export default {
             },
             body: JSON.stringify({ journeys: this.journeys }),
         })
-            .then((x) => x.json())
+            .then((x) => {
+                if (x.status === 200) 
+                    return x.json()
+
+                this.error = true
+                console.error(x)
+                return null
+            })
             .then((x) => {
                 this.fields = x;
             })
-            .then((res) => {
-                if (res.status === 200) {
-                // Create page structures that will calculate the required journeys for an assessment
+            .then(() => {
+                if (this.fields && !this.error) {
+                    // Create page structures that will calculate the required journeys for an assessment
                     this.loading = false;
                     this.hold = true;
                     this.$nextTick(() => {
@@ -148,9 +155,6 @@ export default {
                         this.emitJourney();
                         this.doFocus();
                     })
-                } else {
-                    console.error(res)
-                    this.error = true;
                 }
             })
             .catch((err) => {
