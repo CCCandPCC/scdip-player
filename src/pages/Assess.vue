@@ -50,7 +50,7 @@
                     </v-stepper-items>
                     <v-row class="text-center pb-3">
                         <v-col>
-                            <v-btn
+                            <v-btn large
                                 role="button" 
                                 aria-label="back"
                                 name="btn-back"
@@ -60,7 +60,7 @@
                                 <v-icon left>mdi-arrow-left-bold-circle</v-icon>
                                 Back
                             </v-btn>
-                            <v-btn
+                            <v-btn large
                                 v-if="finished"
                                 role="button" 
                                 aria-label="finish"
@@ -71,7 +71,7 @@
                                 Next
                                 <v-icon>mdi-arrow-right-bold-circle</v-icon>
                             </v-btn>
-                            <v-btn
+                            <v-btn large
                                 v-else
                                 role="button" 
                                 aria-label="next"
