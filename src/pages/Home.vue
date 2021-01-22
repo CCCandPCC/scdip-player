@@ -23,13 +23,13 @@
       </v-col>
     </v-row> 
     <v-skeleton-loader v-if="loading" type="article"/>
-    <v-row v-else>
+    <v-row v-else style="max-width:1100px; margin:auto">
       <v-col class="content" v-html="content">
       </v-col>
     </v-row>
     <v-row>
-      <v-col>
-        <v-btn role="button" color="success" id="btn-home-start-assessment" to="/select">Start</v-btn>
+      <v-col class="text-xl-center">
+        <v-btn role="button" x-large color="success" id="btn-home-start-assessment" to="/select">Start</v-btn>
       </v-col>
     </v-row>
   </v-container>
