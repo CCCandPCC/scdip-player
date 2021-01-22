@@ -14,7 +14,7 @@ module.exports = {
       staticErrorPage: 'index.html',
       assetPath: 'dist',
       assetMatch: '**',
-      deployPath: '/' + process.env.VUE_APP_S3_DEPLOY_STAGE,
+      deployPath: '/' + process.env.VUE_APP_S3_DEPLOY_STAGE || '',
       acl: 'public-read',
       pwa: false,
       enableCloudfront: false,
