@@ -5,7 +5,6 @@ module.exports = {
 
   pluginOptions: {
     s3Deploy: {
-      awsProfile: 'default',
       overrideEndpoint: false,
       region: 'eu-west-2',
       bucket: process.env.VUE_APP_S3D_BUCKET,
@@ -15,12 +14,11 @@ module.exports = {
       staticErrorPage: 'index.html',
       assetPath: 'dist',
       assetMatch: '**',
-      deployPath: '/',
+      deployPath: '/' + process.env.VUE_APP_S3_DEPLOY_STAGE,
       acl: 'public-read',
       pwa: false,
       enableCloudfront: false,
-      pluginVersion: '4.0.0-rc3',
-      uploadConcurrency: 5
+      pluginVersion: '4.0.0-rc4'
     }
   }
 }
