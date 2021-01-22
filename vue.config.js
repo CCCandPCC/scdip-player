@@ -5,7 +5,6 @@ module.exports = {
 
   pluginOptions: {
     s3Deploy: {
-      awsProfile: 'default',
       overrideEndpoint: false,
       region: 'eu-west-2',
       bucket: process.env.VUE_APP_S3D_BUCKET,
