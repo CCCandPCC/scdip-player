@@ -28,7 +28,7 @@
                         </v-row>
                         <v-row class="text-center">
                             <v-col>
-                                <v-btn 
+                                <v-btn large
                                     role="button" 
                                     aria-label="next" 
                                     color="success" 
@@ -64,7 +64,7 @@
                         </v-row>
                         <v-row class="text-center">
                             <v-col>
-                                <v-btn 
+                                <v-btn large class="mr-5"
                                     role="button" 
                                     aria-label="back"
                                     name="btn-back"
@@ -73,7 +73,7 @@
                                     <v-icon left>mdi-arrow-left-bold-circle</v-icon>
                                     Back
                                 </v-btn>
-                                <v-btn 
+                                <v-btn large
                                     name="btn-begin"
                                     role="button" 
                                     aria-label="next" 

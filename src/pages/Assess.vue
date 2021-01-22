@@ -2,7 +2,7 @@
     <div>
         <v-sheet max-width="1200" class="mx-auto" elevation=4>
             <v-stepper v-model="pageIdx" style="box-shadow: none">
-                <v-progress-linear
+                <v-progress-linear v-if="!error"
                     tile="true"
                     color="primary"
                     :value="percentDone"
@@ -10,79 +10,81 @@
                     height=8
                     id="progressBar"
                 />
-                <div v-if="loading">
-                    <br />
-                    <h2>Loading...</h2>
-                    <br />
+                <div v-if="error" class="text-center pb-6">
+                    <h2 class="ma-5">Oops. We haven't been able to load the assessment.</h2>
+                    <v-btn to="/" >Return to start</v-btn>
                 </div>
-                <v-stepper-items>
-                    <v-stepper-content
-                        v-for="(page, idx) in displayPages"
-                        :key="page.id"
-                        :step="idx + 1"
-                        class="assessment-page py-0"
-                        :class="isCurrentPage(idx)"
-                        @change="doFocus"
-                    >
-                        <v-form role="form" aria-label="questions" ref="page" lazy-validation>
-                            <v-row
-                                v-for="(field, index) in page.items"
-                                :key="index"
-                                class="assessment-item"
+                <h2 v-else-if="loading" class="ma-5">Loading...</h2>
+                <div v-else>
+                    <v-stepper-items>
+                        <v-stepper-content
+                            v-for="(page, idx) in displayPages"
+                            :key="page.id"
+                            :step="idx + 1"
+                            class="assessment-page py-0"
+                            :class="isCurrentPage(idx)"
+                            @change="doFocus"
+                        >
+                            <v-form role="form" aria-label="questions" ref="page" lazy-validation>
+                                <v-row
+                                    v-for="(field, index) in page.items"
+                                    :key="index"
+                                    class="assessment-item"
+                                >
+                                    <v-col class="pt-0">
+                                        <component
+                                            :ref="`page${idx}_item${index}`"
+                                            :id="`page${idx}_item${index}`"
+                                            @responded="
+                                                (selection) =>
+                                                    responded(selection, field.name)
+                                            "
+                                            @value="value"
+                                            :is="field.fieldType"
+                                            v-bind="field"
+                                        />
+                                    </v-col>
+                                </v-row>
+                            </v-form>
+                        </v-stepper-content>
+                    </v-stepper-items>
+                    <v-row class="text-center pb-3">
+                        <v-col>
+                            <v-btn large
+                                role="button" 
+                                aria-label="back"
+                                name="btn-back"
+                                class="mr-5"
+                                @click.native="prior"
                             >
-                                <v-col class="pt-0">
-                                    <component
-                                        :ref="`page${idx}_item${index}`"
-                                        :id="`page${idx}_item${index}`"
-                                        @responded="
-                                            (selection) =>
-                                                responded(selection, field.name)
-                                        "
-                                        @value="value"
-                                        :is="field.fieldType"
-                                        v-bind="field"
-                                    />
-                                </v-col>
-                            </v-row>
-                        </v-form>
-                    </v-stepper-content>
-                </v-stepper-items>
-                <v-row class="text-center">
-                    <v-col>
-                        <v-btn
-                            role="button" 
-                            aria-label="back"
-                            name="btn-back"
-                            class="mr-5"
-                            @click.native="prior"
-                        >
-                            <v-icon left>mdi-arrow-left-bold-circle</v-icon>
-                            Back
-                        </v-btn>
-                        <v-btn
-                            v-if="finished"
-                            role="button" 
-                            aria-label="finish"
-                            color="success"
-                            name="btn-finish"
-                            @click="finish"
-                        >
-                            Next
-                            <v-icon>mdi-arrow-right-bold-circle</v-icon>
-                        </v-btn>
-                        <v-btn
-                            v-else
-                            role="button" 
-                            aria-label="next"
-                            color="success"
-                            name="btn-next"
-                            @click.native="next"
-                        >
-                            Next
-                            <v-icon>mdi-arrow-right-bold-circle</v-icon>
-                        </v-btn>
-                    </v-col>
-                </v-row>
+                                <v-icon left>mdi-arrow-left-bold-circle</v-icon>
+                                Back
+                            </v-btn>
+                            <v-btn large
+                                v-if="finished"
+                                role="button" 
+                                aria-label="finish"
+                                color="success"
+                                name="btn-finish"
+                                @click="finish"
+                            >
+                                Next
+                                <v-icon>mdi-arrow-right-bold-circle</v-icon>
+                            </v-btn>
+                            <v-btn large
+                                v-else
+                                role="button" 
+                                aria-label="next"
+                                color="success"
+                                name="btn-next"
+                                @click.native="next"
+                            >
+                                Next
+                                <v-icon>mdi-arrow-right-bold-circle</v-icon>
+                            </v-btn>
+                        </v-col>
+                    </v-row>
+                </div>
             </v-stepper>
         </v-sheet>
     </div>
@@ -108,8 +110,23 @@ export default {
     },
     beforeDestroy() {
         this.$store.commit('setJourney', null)
+
+        window.removeEventListener('beforeunload', this.beforeWindowUnload)
+    },
+    async beforeRouteLeave (to, from, next) {
+        let result = 1
+
+        if (!this.leave)
+            result = await this.$dialog.display(
+                "Leave assessment",
+                "<p>Are you sure you want to leave the assessment?</p><p>You'll lose all progress</p>",
+                [{text:'Stay', color:'success'}, {text:'Leave', color:''}])
+                
+        next(result === 1)
     },
     created() {
+        window.addEventListener('beforeunload', this.beforeWindowUnload)
+
         fetch(this.endpoint + "/journey", {
             method: "post",
             headers: {
@@ -117,18 +134,34 @@ export default {
             },
             body: JSON.stringify({ journeys: this.journeys }),
         })
-            .then((x) => x.json())
+            .then((x) => {
+                if (x.status === 200) 
+                    return x.json()
+
+                this.error = true
+                console.error(x)
+                return null
+            })
             .then((x) => {
                 this.fields = x;
             })
             .then(() => {
-                // Create page structures that will calculate the required journeys for an assessment
-                this.loading = false;
-                this.pageIdx = 1;
-                this.emitJourney();
-                this.doFocus();
-                this.recordPageView();
-            });
+                if (this.fields && !this.error) {
+                    // Create page structures that will calculate the required journeys for an assessment
+                    this.loading = false;
+                    this.hold = true;
+                    this.$nextTick(() => {
+                        this.pageIdx = 1;
+                        this.emitJourney();
+                        this.doFocus();
+                        this.recordPageView();
+                    })
+                }
+            })
+            .catch((err) => {
+                console.error(err)
+                this.error = true;
+            })
     },
     computed: {
         completed() {
@@ -144,6 +177,9 @@ export default {
             const j = this.$route.query.journeys
             
             return Array.isArray(j) ? j : j.split(',')
+        },
+        leave() {
+            return this.error || !this.hold || this.loading
         },
         displayPages() {
             // Arguably, this should filter the pages but it'd make progress tracking harder
@@ -174,6 +210,15 @@ export default {
             }
             // navigates to the next page
             this.movePage(true);
+        },
+        beforeWindowUnload(event) {
+          if (!this.leave)
+          {
+            // Cancel the event as stated by the standard.
+            event.preventDefault();
+            // Older browsers supported custom message
+            event.returnValue = '';
+          }
         },
         prior() {                    
             if (this.pageIdx > 1) {
@@ -291,6 +336,7 @@ export default {
                                 throw "Unable to create results"
                             })
                             .then(x => {
+                                this.hold = false;
                                 this.$router.push({ 
                                     name: "Result", 
                                     params: x
@@ -355,6 +401,8 @@ export default {
     data() {
         return {
             loading: true,
+            hold: false,
+            error: false,
             fields: {},
             pageIdx: 0,
             responses: [],
