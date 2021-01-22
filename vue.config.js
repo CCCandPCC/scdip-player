@@ -19,8 +19,7 @@ module.exports = {
       acl: 'public-read',
       pwa: false,
       enableCloudfront: false,
-      pluginVersion: '4.0.0-rc4',
-      uploadConcurrency: 5
+      pluginVersion: '4.0.0-rc4'
     }
   }
 }
