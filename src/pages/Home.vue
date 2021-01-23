@@ -22,8 +22,7 @@
         </v-banner>
       </v-col>
     </v-row> 
-    <v-skeleton-loader v-if="loading" type="article"/>
-    <v-row v-else style="max-width:1100px; margin:auto">
+    <v-row style="max-width:1100px; margin:auto">
       <v-col class="content" v-html="content">
       </v-col>
     </v-row>
@@ -40,9 +39,7 @@
     name: 'home',
     data () {
       return {
-        showConsent: !localStorage.ga_consent,
-        loading: false,
-        endpoint: process.env.VUE_APP_API_ENDPOINT
+        showConsent: !localStorage.ga_consent
       }
     },
     computed: {

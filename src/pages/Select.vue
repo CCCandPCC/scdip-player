@@ -4,13 +4,13 @@
             <v-progress-linear value="0" height=8></v-progress-linear>
             <v-container class="v-stepper__items">
                 <v-container class="v-stepper__content">
-                    <v-skeleton-loader v-if="loading" type="card" />
+                    <v-skeleton-loader v-if="loading && showJourneys" type="card" />
 
                     <v-form 
                         role="form" 
                         aria-label="Your journey" 
                         ref="categories"
-                        v-else-if="!loading && !showJourneys"
+                        v-else-if="!showJourneys"
                         id="parent-selection"
                     >
                         <v-row>
@@ -94,6 +94,7 @@
 
 <script>
 import Item from "@/components/Item.vue";
+import {mapGetters} from 'vuex'
 
 export default {
     components: {
@@ -104,25 +105,26 @@ export default {
         return {
             loading: true,
             categoriesSelected: false,
-            endpoint: process.env.VUE_APP_API_ENDPOINT,
             categories: [],
             journeys: [],
         };
     },
     created() {
-        Promise.all([fetch(this.endpoint + "/journey-parents"),fetch(this.endpoint + "/journeys")])
-            .then(responses => Promise.all(responses.map(res => res.json())))
+        this.categories = this.$store.state.journeyParents.map((c) => ({ ...c, selected: false }));
+
+        fetch(this.apiEndpoint + "/journeys")
+            .then(res => res.json())
             .then(x => { 
-                this.categories = x[0].map((c) => ({ ...c, selected: false }));
-                this.journeys = x[1].map((j) => ({ ...j, selected: false }));
+                this.journeys = x.map((j) => ({ ...j, selected: false }));
                 this.loading = false;
+                this.doFocus();
             })
     },
     computed: {
         showJourneys() {
-            this.doFocus();
-            return this.categoriesSelected || this.categories.length <= 1;
+            return this.categoriesSelected || this.categories.length <= 0;
         },
+        ...mapGetters(['apiEndpoint']),
         selectedCats() {
             return this.categories.filter((x) => x.selected).map((x) => x.journeys);
         },
@@ -160,11 +162,9 @@ export default {
         doFocus(){
             window.scrollTo(0,0);
             this.$nextTick(()=> {
-                if(this.showJourneys) {
-                    this.$refs[`journeys_item0`].focus()
-                } else {
-                    this.$refs[`categories_item0`].focus()
-                }
+                let f = this.showJourneys ? this.$refs[`journeys_item0`] : this.$refs[`categories_item0`]
+                if (f)
+                    f.focus()
             })
         }
     }

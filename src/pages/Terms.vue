@@ -1,8 +1,7 @@
 <template>
     <v-container>
         <v-card>
-            <v-progress-circular id="loading-terms" v-if="loading"></v-progress-circular>
-            <div v-else-if="terms">
+            <div v-if="terms">
                 <v-container>
                     <div role="heading" aria-level="3" class="text-h4 mb-2" v-text="terms.title" tabindex="0"></div>
                 </v-container>
@@ -18,12 +17,6 @@
 <script>
 export default {
     name: "terms",
-    data() {
-        return {
-            endpoint: process.env.VUE_APP_API_ENDPOINT,
-            loading: false
-        }
-    },
     computed: {
         terms() {
             return this.$store.getters.staticContent("DISCLAIMER")

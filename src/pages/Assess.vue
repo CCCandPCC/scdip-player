@@ -97,6 +97,7 @@ import MultipleChoiceInput from "../components/controls/MultipleChoiceInput.vue"
 import BooleanInput from "../components/controls/BooleanInput.vue";
 import Stimulus from "../components/controls/Stimulus.vue";
 import utils from "@/js/assess-utils.js";
+import {mapGetters} from 'vuex';
 
 export default {
     name: "Assess",
@@ -127,7 +128,7 @@ export default {
     created() {
         window.addEventListener('beforeunload', this.beforeWindowUnload)
 
-        fetch(this.endpoint + "/journey", {
+        fetch(this.apiEndpoint + "/journey", {
             method: "post",
             headers: {
                 "Content-Type": "application/json",
@@ -167,6 +168,7 @@ export default {
         completed() {
             return this.$store.getters.staticContent("COMPLETED")
         },
+        ...mapGetters(['apiEndpoint']),
         percentDone() {
             return Math.round((this.pageIdx / this.displayPages.length) * 100);
         },
@@ -321,7 +323,7 @@ export default {
                         }
 
                         if (result === 0) {
-                            fetch(this.endpoint + "/responses", {
+                            fetch(this.apiEndpoint + "/responses", {
                                 method: "post",
                                 headers: {
                                 "Content-Type": "application/json",
@@ -408,7 +410,6 @@ export default {
             responses: [],
             tags: [], // this is here to allow quick assessment mutations but I suspect that you
             // could achieve the same by watching `responses`
-            endpoint: process.env.VUE_APP_API_ENDPOINT,
         };
     },
 };
