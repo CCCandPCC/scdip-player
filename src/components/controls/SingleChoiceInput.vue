@@ -3,7 +3,7 @@
         <v-container max-width="1200" class="mx-auto">
             <div class="d-flex flex-wrap">
                 <v-col cols=auto class="pa-0 align-self-center">
-                        <v-img v-if="img" :src="display(img.src)" :alt="img.alt" width="250" />
+                        <v-img v-if="img && img.src" :src="display(img.src)" :alt="img.alt" :title="img.title" width="250" />
                         <v-icon size="250" v-else>
                             mdi-comment-question-outline
                         </v-icon>
