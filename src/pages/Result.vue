@@ -53,6 +53,7 @@
 
 <script>
 import resource from "@/components/Resource.vue";
+import {mapGetters} from 'vuex';
 
 export default {
     name: "Result",
@@ -64,7 +65,7 @@ export default {
 
         if (!this.resources)
             getResults.push(
-                fetch(`${this.endpoint}/result/${this.id}`)
+                fetch(`${this.apiEndpoint}/result/${this.id}`)
                 .then((x) => x.json())
                 .then((x) => {
                     this.results = JSON.parse(x.resources);
@@ -74,7 +75,7 @@ export default {
             this.results = this.resources
 
         Promise.all([
-            fetch(this.endpoint + "/banners")
+            fetch(this.apiEndpoint + "/banners")
                 .then((bannerResponse) => {
                     if (bannerResponse.status === 404)
                         return null;
@@ -123,6 +124,7 @@ export default {
         noResults() {
             return this.$store.getters.staticContent("POSITIVE")
         },
+        ...mapGetters(['apiEndpoint']),
         categorisedList() {
             if (!this.results.length) return [];
             return this.results
@@ -140,7 +142,6 @@ export default {
         return {
             banners: [],
             loading: true,
-            endpoint: process.env.VUE_APP_API_ENDPOINT,
             resultId: null,
             results: []
         };

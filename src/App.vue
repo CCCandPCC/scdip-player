@@ -22,23 +22,31 @@
 <script>
 import Toolbar from '@/components/Toolbar';
 import Footer from '@/components/Footer';
+import {mapGetters} from 'vuex'
+
 
 export default {
   name: 'App',
   created() {
     Promise.all([
-      fetch(this.endpoint + '/theme')
+      fetch(this.apiEndpoint + '/theme')
       .then(x => x.json())
       .then( x => {
         document.title = x.title
         this.title = x.title
         this.$vuetify.theme.themes.light.primary = x.primary
         this.$vuetify.theme.themes.light.secondary = x.secondary
+        this.$store.commit('setAccountId', x.accountId || '')
       }),
-      fetch(this.endpoint + '/content')
-      .then(x=>x.json())
-      .then(x=> {
+      fetch(this.apiEndpoint + '/content')
+      .then(x => x.json())
+      .then(x => {
         this.$store.commit('setPageContent', x)
+      }),
+      fetch(this.apiEndpoint + '/journey-parents')
+      .then(x => x.json())
+      .then(x => {
+        this.$store.commit('setJourneyParents', x)
       })
     ])
     .catch((err) => {
@@ -57,11 +65,11 @@ export default {
   data: () => ({
     loading: true,
     error: false,
-    title: "loading...",
-    endpoint: process.env.VUE_APP_API_ENDPOINT
+    title: "loading..."
   }),
   computed: {
-    pageTitle() {return this.$route.meta ? this.$route.meta.title : ''}
+    pageTitle() {return this.$route.meta ? this.$route.meta.title : ''},
+    ...mapGetters(['apiEndpoint'])
   }
 };
 </script>

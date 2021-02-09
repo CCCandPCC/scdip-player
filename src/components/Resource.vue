@@ -22,14 +22,11 @@
 
 <script>
 import image from '@/js/image.js'
+import {mapGetters} from 'vuex'
+
 export default {
     name: "Resource",
     props: ['doc'],
-    data () {
-      return {
-        endpoint: process.env.VUE_APP_API_ENDPOINT
-      }
-    },
     computed: {
       img() {
         if (this.doc.img)
@@ -42,8 +39,9 @@ export default {
     },
     methods: {
       display(filename) {
-        return image(this.endpoint,filename)
-      }
+        return image(this.apiEndpoint(),filename)
+      },
+      ...mapGetters(['apiEndpoint'])
     }
 };
 </script>
