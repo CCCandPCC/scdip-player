@@ -150,7 +150,7 @@ export default {
             }
             this.$router.push({
                 name: "Assessment",
-                query: { journeys: this.selectedJourneys },
+                query: { journeys: this.selectedJourneys.join(',') },
             });
         },
         selectCategories(selected = true) {

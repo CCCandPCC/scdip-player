@@ -22,8 +22,13 @@
         </v-banner>
       </v-col>
     </v-row> 
+    <v-row style="max-width:1100px; margin:auto" v-if="content.title">
+      <v-col>
+        <h1>{{content.title}}</h1>
+      </v-col>
+    </v-row>
     <v-row style="max-width:1100px; margin:auto">
-      <v-col class="content" v-html="content">
+      <v-col class="content" v-html="content.content">
       </v-col>
     </v-row>
     <v-row>
@@ -44,7 +49,7 @@
     },
     computed: {
         content() {
-          return this.$store.getters.staticContent("LANDING").content
+          return this.$store.getters.staticContent("LANDING")
         }
     },
     methods: {
