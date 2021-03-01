@@ -14,11 +14,11 @@ module.exports = {
       staticErrorPage: 'index.html',
       assetPath: 'dist',
       assetMatch: '**',
-      deployPath: '/' + process.env.VUE_APP_S3_DEPLOY_STAGE,
+      deployPath: '/' + (process.env.VUE_APP_S3_DEPLOY_STAGE || ''),
       acl: 'public-read',
       pwa: false,
       enableCloudfront: false,
-      pluginVersion: '4.0.0-rc4'
+      pluginVersion: '4.0.0-rc3'
     }
   }
 }

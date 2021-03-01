@@ -26,17 +26,17 @@
 
 <script>
 import image from "@/js/image.js";
+import {mapGetters} from 'vuex';
+
 export default {
     name: "Choice",
     props: ["value", "label", "imgSrc", "imgAlt"],
-    data() {
-        return {
-            endpoint: process.env.VUE_APP_API_ENDPOINT,
-        };
+    computed: {
+      ...mapGetters(['apiEndpoint'])
     },
     methods: {
         display(filename) {
-            return image(this.endpoint, filename);
+            return image(this.apiEndpoint, filename);
         },
         click(evt) {
             if (
@@ -56,9 +56,15 @@ export default {
     .choice:focus {
         outline: -webkit-focus-ring-color auto 1px;
     }
+    
+    .choice img {
+        max-height: 150px;
+        max-width: 150px;
+    }
+
     @media (max-width: 600px) {
         .choice img {
             max-width:100%
         }
-    }
+
 </style>

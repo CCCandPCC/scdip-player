@@ -3,7 +3,7 @@
         <v-container max-width="1200" class="mx-auto">
             <div class="d-flex flex-wrap">
                 <v-col cols=auto class="pa-0 align-self-center">
-                        <v-img v-if="img" :src="display(img.src)" :alt="img.alt" width="250" />
+                        <v-img v-if="img && img.src" :src="display(img.src)" :alt="img.alt" :title="img.title" width="250" />
                         <v-icon size="250" v-else>
                             mdi-comment-question-outline
                         </v-icon>
@@ -36,12 +36,17 @@
 </template>
 <script>
 import Choice from "@/components/controls/Choice.vue";
+import {mapGetters} from 'vuex';
 import image from "@/js/image.js";
+
 export default {
     name: "SingleChoiceInput",
     props: ["label", "name", "example", "img", "choices", "isMandatory"],
     components: {
         Choice,
+    },
+    computed: {
+        ...mapGetters(['apiEndpoint'])
     },
     data() {
         return {
@@ -52,8 +57,7 @@ export default {
                           (choice && choice.value !== undefined) ||
                           "Please select a response",
                   ]
-                : [],
-            endpoint: process.env.VUE_APP_API_ENDPOINT,
+                : []
         };
     },
     watch: {
@@ -66,7 +70,7 @@ export default {
             return c.img === undefined ? undefined : c.img.src;
         },
         display(filename) {
-            return image(this.endpoint, filename);
+            return image(this.apiEndpoint, filename);
         },
         focus() {
             this.$refs.label.focus()
