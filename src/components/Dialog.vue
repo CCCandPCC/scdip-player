@@ -16,7 +16,7 @@
               v-html="message"
             ></v-card-text>
             <v-card-actions class="justify-end">
-              <v-btn role="button" class="mx-2 px-5" v-for="(btn, index) in buttons" :key="index" 
+              <v-btn :id="'dialog-btn-' + index" role="button" class="mx-2 px-5" v-for="(btn, index) in buttons" :key="index" 
                 :color=btn.color @click="choose(index)">{{btn['text']}}
               </v-btn>
             </v-card-actions>
