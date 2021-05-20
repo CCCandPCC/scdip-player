@@ -4,7 +4,7 @@
         {
             "step": "respond",
             "type": "category-input",
-            "value_text": ["Sample-Journey-Parent"]
+            "value_text": ["New parent"]
         },
         {
             "step": "confirm_categories"
@@ -12,7 +12,7 @@
         {
             "step": "respond",
             "type": "journey-input",
-            "value_text": ["Show-Resources"]
+            "value_text": ["Journey 1"]
         },
         {
             "step": "confirm_journies"
@@ -21,6 +21,28 @@
             "step": "respond",
             "type": "single-choice-input",
             "value_text": "Yes"
+        },
+        {
+            "step": "next"
+        },
+        {
+            "step": "respond",
+            "type": "single-choice-input",
+            "value_text": "No"
+        },
+        {
+            "step": "next"
+        },
+        {
+            "step": "respond",
+            "type": "single-choice-input",
+            "value_text": "Maybe"
+        },
+        {
+            "step": "respond",
+            "type": "single-choice-input",
+            "value_text": "Yes",
+            "item_index": 1
         },
         {
             "step": "finish"
