@@ -7,7 +7,7 @@
     >
         <v-card ref="card" :color="active ? 'primary' : 'white'" @click="click"
             class="d-flex flex-wrap align-content-start justify-start" @keypress="click" height="100%">
-            <div>
+            <div class="d-flex d-sm-block">
                 <div class="ma-3" style="width:150px;height:150px">
                     <img v-if="imgSrc" :src="display(imgSrc)" :alt="imgAlt" :title="imgAlt" 
                         style="max-height:150px" />
@@ -56,9 +56,15 @@ export default {
     .choice:focus {
         outline: -webkit-focus-ring-color auto 1px;
     }
-
-    img {
+    
+    .choice img {
         max-height: 150px;
         max-width: 150px;
     }
+
+    @media (max-width: 600px) {
+        .choice img {
+            max-width:100%
+        }
+
 </style>
