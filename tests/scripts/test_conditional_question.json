@@ -4,7 +4,7 @@
         {
             "step": "respond",
             "type": "category-input",
-            "value_text": ["New parent"]
+            "value_text": ["Conditional-Journey-Test"]
             
         },
         {
@@ -13,7 +13,7 @@
         {
             "step": "respond",
             "type": "journey-input",
-            "value_text": ["Journey 2"]
+            "value_text": ["Conditional-Journey-Test"]
         },
         {
             "step": "confirm_journies"
@@ -21,13 +21,10 @@
         {
             "step": "respond",
             "type": "single-choice-input",
-            "value_text": "Yes"
+            "value_text": "conditional-input-a"
         },
         {
-            "step" :"finish"
-        },
-        {
-            "step" :"results"
+            "step": "next"
         }
     ],
     "data" : {

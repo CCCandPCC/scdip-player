@@ -4,7 +4,7 @@
         {
             "step": "respond",
             "type": "category-input",
-            "value_text": ["New parent"]
+            "value_text": ["Sample-Journey-Parent"]
         },
         {
             "step": "confirm_categories"
@@ -12,7 +12,7 @@
         {
             "step": "respond",
             "type": "journey-input",
-            "value_text": ["Journey 1"]
+            "value_text": ["journey-one"]
         },
         {
             "step": "confirm_journies"
