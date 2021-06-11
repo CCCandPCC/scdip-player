@@ -255,7 +255,7 @@ class ScdipTests(unittest.TestCase):
         script = self.open_json(name)
         for step in script['steps']:
             numstep = step['step']
-            if   numstep == "confirm_categories":
+            if numstep == "confirm_categories":
                 self.confirm_categories()
             elif numstep == "confirm_journies":
                 self.confirm_journies()
@@ -267,6 +267,8 @@ class ScdipTests(unittest.TestCase):
                 self.click_back()
             elif numstep == "restart":
                 self.click_restart()
+            elif numstep == "results":
+                self.click_dialog_left()
             elif numstep == "respond":
                 if "type" in step:
                     typestep = step['type']
@@ -275,10 +277,15 @@ class ScdipTests(unittest.TestCase):
 
                 value_text = step["value_text"] if "value_text" in step else None
 
+                if "item_index" in step: 
+                    numitem = step['item_index']
+                else:
+                    numitem = 0
+                
                 if typestep == 'single-choice-input':
-                    self.fill_single_choice_input(value_text)
+                    self.fill_single_choice_input(value_text, numitem)
                 elif typestep == 'multiple-choice-input':
-                    self.fill_multi_choice_input(value_text)
+                    self.fill_multi_choice_input(value_text, numitem)
                 elif typestep == 'category-input':
                     self.fill_category_input(value_text)
                 elif typestep == 'journey-input':
@@ -326,6 +333,18 @@ class ScdipTests(unittest.TestCase):
         WebDriverWait(self.browser, 10).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, "button#btn-restart-assessment")),
             'Failed to locate restart button'
+        ).click()
+
+    def click_dialog_right(self):
+        WebDriverWait(self.browser, 10).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, "[id=dialog-btn-1]")),
+            'Failed to locate leave button'
+        ).click()
+
+    def click_dialog_left(self):
+        WebDriverWait(self.browser, 10).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, "[id=dialog-btn-0]")),
+            'Failed to locate stay button'    
         ).click()
         
     ## Tests
@@ -389,7 +408,7 @@ class ScdipTests(unittest.TestCase):
             EC.presence_of_element_located((By.CSS_SELECTOR,f"{self.CURRENT_PAGE_SELECTOR}")),
             "Failed to locate item"
         )
-        title = item.find_element_by_css_selector('.text-h3')
+        title = item.find_element_by_css_selector('.text-h4')
         self.assertEqual(title.text, data['question_text'])
     
     #Test that a conditional question is not rendered when expected
@@ -400,7 +419,7 @@ class ScdipTests(unittest.TestCase):
             EC.presence_of_element_located((By.CSS_SELECTOR,f"{self.CURRENT_PAGE_SELECTOR}")),
             "Failed to locate item"
         )
-        title = item.find_element_by_css_selector('.text-h3')
+        title = item.find_element_by_css_selector('.text-h4')
         self.assertNotEqual(title.text, data['question_text'])
     
     #Test that a conditional question that was not rendered is rendered once the selected choice is changed
@@ -411,7 +430,7 @@ class ScdipTests(unittest.TestCase):
             EC.presence_of_element_located((By.CSS_SELECTOR,f"{self.CURRENT_PAGE_SELECTOR}")),
             "Failed to locate item"
         )
-        title = item.find_element_by_css_selector('.text-h3')
+        title = item.find_element_by_css_selector('.text-h4')
         self.assertNotEqual(title.text, data['question_text'])
 
     #Test an assessment is halted when finishing with a form ending choice
@@ -463,7 +482,7 @@ class ScdipTests(unittest.TestCase):
             EC.presence_of_element_located((By.ID, 'no_results')),
             "Failed to result no_results container"
         )
-        title = null_result_container.find_element_by_css_selector('.text-h3')
+        title = null_result_container.find_element_by_css_selector('.text-h4')
         self.assertEqual(title.text,data['title'])
         content = null_result_container.find_element_by_css_selector('.col')
         self.assertEqual(content.text, data['content'])
@@ -483,7 +502,7 @@ class ScdipTests(unittest.TestCase):
         self.assertIsNotNone(category)
 
         # look for resource
-        resources = category.find_elements_by_css_selector('[type=resource]')
+        resources = category.find_elements_by_css_selector('[sort=resource]')
         resource = next((res for res in resources if res.find_element_by_css_selector('.headline').text == data['resource_name']), None)
         self.assertIsNotNone(resource)
         
@@ -550,5 +569,33 @@ class ScdipTests(unittest.TestCase):
     def test_back_to_select(self):
         self.test_select()
         self.click_back()
+        self.click_dialog_right()
         self.page_select()
     
+    def test_accept_cookies(self):
+        self.browser.get(self.ROOT)
+        time.sleep(2)
+        btns = self.browser.find_elements_by_class_name('v-btn__content')
+        
+        for x in btns:
+            if x.text == 'ACCEPT':
+                accept = x
+                accept.click()
+                break
+            
+        consent = self.browser.execute_script("return window.localStorage.getItem(arguments[0]);", 'ga_consent')
+        self.assertTrue(consent, 'Cookies not accepted')
+        
+    def test_decline_cookies(self):
+        self.browser.get(self.ROOT)
+        time.sleep(2)
+        btns = self.browser.find_elements_by_class_name('v-btn__content')
+        
+        for x in btns:
+            if x.text == 'DECLINE':
+                decline = x
+                decline.click()
+                break
+            
+        consent = self.browser.execute_script("return window.localStorage.getItem(arguments[0]);", 'ga_consent')
+        self.assertTrue(consent, 'Cookies not declined')

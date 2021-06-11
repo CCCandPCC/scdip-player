@@ -24,7 +24,7 @@
             "value_text": "conditional-input-a"
         },
         {
-            "step" :"next"
+            "step": "next"
         }
     ],
     "data" : {
